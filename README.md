@@ -398,6 +398,420 @@ The definitions and declarations shared among the files. As much as possible, we
 
 For this small program, it is fine that we have one headgear file that contains everything. For a much larger program, more organization and more headers would be needed.
 
-<img src="headers.png" width="400">
+<img src="headers.png" width="600">
+
+## Static Variables - 
+The static declaration, **applied to an external variable or function**, limits the scope of that object to the rest of the source file being compiled. External static thus provides a way to hide names like buf and bufp in the getch-ungetch combination, which must be external so they can be shared, yet which should not be visible to users of getch and ungetch.
+
+- Static storage is specified by prefixing the normal declaration with the word static.
+```c
+static char buf[BUFSIZE];
+static int bufp = 0;
+
+int getch(void) { … }
+void ungetch(int c) { … }
+```
+- If the two routines and the two variables are compiled in one file as above, then no other routine will be able to access buf and bufp, and those names will not conflict with the same names in other files of the same program. In the same way, the variables that push and pop use for stack manipulation can be hidden, by declaring sp and val to be static.
+
+Normally function names are global, visible to any part of the entire program. If a **function is declared static**, however, its name is invisible outside of the file in which it is declared. 
+
+**Internal static variables** are local to a particular function just as automatic variables are, but unlike automatics, they remain in existence rather than coming and going each time the function is activated. This means that internal static variables provide private, permanent storage within a single function. 
+
+## Register Variables - 
+A register declaration advises the compiler that the variable in question will be heavily used. The idea is that the register variables are to be placed in machine registers, which may result in smaller and faster programs. But compilers are free to ignore the advice. 
+```c
+register int x;
+register char c;
+```
+
+The register declaration can only be applied to automatic variables and to the formal parameters of a function. In this later case, it looks like
+```c
+f(register unsigned m, register long n)
+{
+	register int i;
+	…
+}
+```
+
+Depending on the hardware, there are restrictions on how many variables can be in the register, and what types are allowed. Excess definitions are harmless, bc the extra will be ignored. It is not possible to take the address of a register variable.
+
+Block Structure - 
+An automatic variable declared and initialized in a block is initialized each time the block is entered.
+
+If an automatic variable has the same name as an external variable or function, the automatic variable hides any outer occurrences. 
+```c
+int x;
+int y;
+f(double x) {
+	double y;
+}
+```
+Inside f, x is the double, outside f, x refers to the external x, … 
+
+## Initialization - 
+External and static variables
+- If not explicitly initialized, it’s guaranteed to be initialized to 0.
+- The initializer must be a constant expression. The initialization is done before the program begins execution.
+Automatic and register variables 
+- If not explicitly initialized, have undefined (garbage) initial values.
+- Initializer is not restricted to being constant, it may be an expression involving other variables/function calls.
 
 
+Scalar variables 
+- variables with one value, as opposed to an array
+- may be initialized when they are defined, by following the name with an equal sign and expression.
+
+
+Arrays
+- may be initialized by following its declaration with a list of initializers enclosed in braces and separated by commas. 
+```c
+int days[] = {31, 28, 31, 30, 31, 31, 30, 31, 30, 31 }
+```
+- When the size of the array is omitted, the compiler will compute the length by counting the initializers, of which there are 12 in this case.
+- If there are fewer initializers for an array than the specified size, the others will be zero for external, static and automatic variables. It is an error to have too many initializers or initialize some elements of an array but not others.
+- Character arrays are a special case of initialization; a string may be used instead of the braces and commas notation. The following two lines are the same:
+```c
+		char pattern = “ould”;
+		char pattern[] = {‘o’, ‘u’, ‘l’, ‘d’, ‘\0’};
+	// In this case the array size is 5 (4 characters plus the ‘\0’).
+```
+	
+## Recursion
+Functions can call themselves, either directly or indirectly.
+When a function calls itself recursively, each invocation gets a fresh set of all the automatic variables, independent of the previous set. 
+
+// QuickSort function showing recursion - given an array, one element is chosen and the others partitioned in two subsets - those less than the partition element and those greater than or equal to it. The same process is then applied recursively to the two subsets. When a subset has fewer than two elements, it doesn’t need any sorting; this stops the recursion.
+
+One algo:
+1. Move partition element to the first position
+2. Find first element that is greater than partition element and swap with first element less than partition element
+3. Continue step 2 until index of first element greater is more than the index of first element less than 
+4. Swap partition element back into its position
+5. Call quicksort on left and right sub arrays
+
+
+Diff algo:
+```c
+// Online C compiler to run C program online
+#include <stdio.h>
+
+void qsort(int v[], int left, int right)
+{
+    int last;
+    void swap(int v[], int i, int j);
+    printf("Left Value: %d Right Value: %d\n", left, right);
+    if (left >= right) //do nothing if array contains fewer than two elements
+        return;
+    
+    swap(v, left, (left + right)/2); // move partition elem to v[0]
+    last = left; // represents the last value less than partition
+    
+    for (int curr=left + 1; curr <= right; curr ++){
+        printf("%d %d\t %d %d\n", curr, left, v[curr], v[left]);
+        if (v[curr] < v[left]){
+            ++last; 
+            printf("%d %d last:%d\n", curr, left, last);
+            // if current value is less than the partition value and current value is not last value, swap the two so 
+            // that the last value is the current value
+            if (curr != last)
+                swap(v, last, curr);
+        }
+    }
+    printf("Reset ");
+    swap(v, left, last); // swap partition element with last value less than it
+    qsort(v, left, last-1);
+    qsort(v, last+1, right);
+}
+
+void swap(int v[], int i, int j)
+{  
+    int temp;
+    temp = v[i];
+    v[i] = v[j];
+    v[j] = temp;
+    
+    printf("swap: %d %d %d %d %d %d\n", v[0], v[1], v[2], v[3], v[4], v[5]);
+}
+void printArray(int arrayLength, int v[]){
+    // the arrayLength must be passed in, bc v is a pointer to the array
+    // doing sizeof (v) will give us the size of the pointer
+    if (arrayLength == 0) {
+        printf("too small\n");
+        return;  
+    }
+        
+    for(int i = 0; i < arrayLength; i++)
+      printf("%d ", v[i]);
+    
+    printf("\n");
+}
+
+void main (){
+    int v[] = {12, 3, 10, 4, 34, 19};
+    int arrayLength = (sizeof (v) /sizeof (v[0]));
+    int start = 0;
+    int end = 5;
+    
+    printf("Starting Array: ");
+    printArray(arrayLength, v);
+    
+    qsort(v, start, end); 
+    
+    printf("Sorted Array: ");
+    printArray(arrayLength, v);
+}
+```
+
+
+## The C Preprocessor 
+Preprocessor - first step in compilation that does replacing
+File Inclusion replaces #include “filename”/<filename> with the contents of the file filename. So, if an included file is changed, all files that depend on it must be recompiled.
+Macro Substitution with #define name replacement replaces any later occurrences of name with replacement till the end of the file.
+Definitions can be continued onto several lines by placing a \ at the end of each line to be continued.
+A definition may use previous definitions.
+You can define a name with an infinite loop:
+#define forever for(;;)
+You can define macros with arguments:
+#define max(A,B) ((A) > (B) ? (A) : (B))
+This macro, unlike a function, will serve for any data type, so you can even do: x = max(p, r)
+#include <stdio.h>
+#define max(A,B) ((A) > (B) ? (A) : (B))
+
+
+ main() {
+    int x = max(2, 4);
+    printf("%d", x);
+
+    char y = max('z', 'd');
+    printf("\n%c", y);
+}
+Macros do have side effects, such as if max is called with ++a, then a is incremented twice, #define square(x) x*x must be specified as #define square(x) (x)*(x) or else square(a + b) will evaluate wrong.
+Macros are still useful to avoid the run-time overhead of calling a function each time. Getchar and putchar are often defined as macros to avoid calling a function for each character processed. 
+Names can be undefined with #undef
+Ensures that a routine is really a function not a macro:
+#undef getchar
+int getchar(void) { … }
+To make a macro argument a quoted string, use # before the argument. A debug statement can be written as 
+#define dprint(expr) printf(#expr “ =%g\n”, expr)
+→ When it is invoked with dprint(x, y)
+→ The macro is expanded into printf(“x/y” “ =&g\n”, x/y), and the two strings are concating printing out a legal string constant.
+## concatenates two arguments:
+#define paste(front, back) front ## back 
+paste(name, 1) makes the token name1
+Conditional Inclusion to control preprocessing with conditional statements to include code selectively
+defined(name) in a #if is 1 if the name has been defined, and 0 otherwise. 
+So if we want to make sure that the contents of a header are included only once, the contents of the file are surrounded with a conditional like this.
+#if !defined(HDR)
+#define HDR
+/* contents of hdr.h go here */
+#endif
+defined(name) and !defined(name) can also be written as #ifdef and #ifndef
+The first inclusion of hdr.h defines the name HDR; later inclusions will find the name defined and skip down to the #endif. This is useful for each header itself to include any other headers on which it depends, without the user having to deal with interdependence. 
+This sequence tests the name SYSTEM to decide which version of a header to include:
+	#if SYSTEM == SYSV
+		#define HDR “sysv.h”
+	#elif SYSTEM == BSD
+		#define HDT “bsd.h”
+	#else
+		#define HDR “default.h”
+	#endif
+	#include HDR
+
+# CALCULATOR IN MULTIPLE FILES - MAIN.C
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <calc.h>
+
+// K&R page 76-79
+
+#define MAXOP   100 // max size of operand or operator
+
+// reverse Polish calculator
+int main()
+{
+    int type;
+    double op2;
+    char s[MAXOP];
+
+    while ((type = getop(s)) != EOF) 
+    {
+        switch (type) {
+        case NUMBER:
+            push(atof(s));
+            break;
+        case '+':
+            push(pop() + pop());
+            break;
+        case '*':
+            push(pop() * pop());
+            break;
+        case '-':
+            op2 = pop();
+            push(pop() - op2);
+            break;
+        case '/':
+            op2 = pop();
+            if (op2 != 0.0)
+                push(pop() / op2);
+            else
+                printf("error:zero divisor\n");
+            break;
+        case '\n':
+            printf("\t%.8g\n", pop());
+            break;
+        default:
+            printf("error: unknown command %s\n", s);
+            break;
+        }
+    }
+    return 0;
+}
+```
+
+CALCULATOR IN MULTIPLE FILES - CALC.H
+```c
+#define NUMBER  '0' // signal that a number was found
+
+void push(double);
+double pop(void);
+int getop(char []);
+int getch(void);
+void ungetch(int);
+```
+
+CALCULATOR IN MULTIPLE FILES - STACK.C
+```c
+#include <stdio.h>
+#include <calc.h>
+
+#define MAXVAL 100  // maximum depth of val stack
+
+int sp = 0;         // next free stack position
+double val[MAXVAL]; // value stack
+
+// push: push f onto value stack
+void push(double f)
+{
+    if (sp < MAXVAL)
+        val[sp++] = f;
+    else
+        printf("error:stack full, can't push %g\n", f);
+}
+
+// pop:pop and return top value from stack
+double pop(void)
+{
+    if (sp > 0)
+        return val[--sp];
+    else {
+        printf("error:stack empty\n");
+        return 0.0;
+    }
+}
+```
+
+CALCULATOR IN MULTIPLE FILES - GETOP.C
+```c
+#include <stdio.h>
+#include <ctype.h>
+#include <calc.h>
+
+// getop: get next operator or numeric operand
+
+int getop(char s[])
+{
+    int i, c;
+
+    while ((s[0] = c = getch()) == ' ' || c == '\t')
+        ;
+
+    s[1] = '\0';
+    if (!isdigit(c) && c != '.')
+        return c; // not a number
+    i = 0;
+    if (isdigit(c)) // collect integer part
+        while (isdigit(s[++i] = c = getch()))
+            ;
+    if (c == '.') // collect fraction part
+        while (isdigit(s[++i] = c = getch()))
+            ;
+
+    s[i] = '\0';
+    if (c != EOF)
+        ungetch(c);
+    return NUMBER;
+}
+
+```
+
+CALCULATOR IN MULTIPLE FILES - GETCH.C
+```c
+#include <stdio.h>
+#include <ctype.h>
+#include <calc.h>
+
+// getop: get next operator or numeric operand
+
+int getop(char s[])
+{
+    int i, c;
+
+    while ((s[0] = c = getch()) == ' ' || c == '\t')
+        ;
+
+    s[1] = '\0';
+    if (!isdigit(c) && c != '.')
+        return c; // not a number
+    i = 0;
+    if (isdigit(c)) // collect integer part
+        while (isdigit(s[++i] = c = getch()))
+            ;
+    if (c == '.') // collect fraction part
+        while (isdigit(s[++i] = c = getch()))
+            ;
+
+    s[i] = '\0';
+    if (c != EOF)
+        ungetch(c);
+    return NUMBER;
+}
+```
+
+CALCULATOR - COMPILING
+```
+    gcc -o main.exe main.c getch.c getop.c stack.c -I.
+```
+
+
+CALCULATOR - MAKE FILE
+```c
+# Definitions for constants
+CC=gcc
+CFLAGS=-I.
+
+# This will create your final output using .o compiled files
+make: main.o stack.o getch.o getop.o
+    $(CC) $(CFLAGS) -o main main.o stack.o getch.o getop.o
+
+stack.o: stack.c
+    $(CC) $(CFLAGS) -c stack.c
+
+getch.o: getch.c
+    $(CC) $(CFLAGS) -c getch.c
+
+getop.o: getop.c
+    $(CC) $(CFLAGS) -c getop.c
+
+# This will compile main.c with its dependency
+main.o: main.c calc.h
+    $(CC) $(CFLAGS) -c main.c
+
+# This will clean or remove compiled files so you can start fresh
+clean:
+    rm -f *.o *.exe
+```
+
+# Homework:
+The C Programming Language, 2nd Edition - Kernighan & Ritchie
+Chapter 1.10, 4.3-4.11
