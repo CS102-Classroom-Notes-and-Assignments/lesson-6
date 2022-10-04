@@ -796,7 +796,7 @@ CALCULATOR - COMPILING
 
 
 CALCULATOR - MAKE FILE
-```c
+```make
 # Definitions for constants
 CC=gcc
 CFLAGS=-I.
