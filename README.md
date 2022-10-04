@@ -352,6 +352,10 @@ void ungetch(int c) // push character back on input
 ```
 
 
+#### Header files - 
+The definitions and declarations shared among the files. As much as possible, we want to centralize this, so that there is only one copy to get and keep right as the program evolves. Accordingly, we will place this common material in a header file, calc.h, which will be included as necessary.
+
+For this small program, it is fine that we have one headgear file that contains everything. For a much larger program, more organization and more headers would be needed.
 
 
 
