@@ -92,7 +92,10 @@ int main()
 #include <stdio.h>
 
 double atof(char s[]);
+```
 
+#### atof.c
+```c
 #include <ctype.h>
 
 // K&R Pg. 71
@@ -124,7 +127,7 @@ double atof(char s[])
     return sign * val / power;
 }
 ```
-#### atof.c
+#### main.c
 ```c
 #include <stdio.h>
 #include <atof.h>
