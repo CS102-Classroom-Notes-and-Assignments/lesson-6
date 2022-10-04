@@ -824,5 +824,5 @@ clean:
 ```
 
 # Homework:
-The C Programming Language, 2nd Edition - Kernighan & Ritchie
-Chapter 1.10, 4.3-4.11
+- The C Programming Language, 2nd Edition - Kernighan & Ritchie, Chapter 1.10, 4.3-4.11
+- HW link - check lesson 5
