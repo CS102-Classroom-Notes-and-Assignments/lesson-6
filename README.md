@@ -404,15 +404,16 @@ int add(int a, int b)
 ```
 During this function definition, the memory for the function add will be allocated.
 
-Use extern variables carefully - using too much can lead to programs where data connections are not all obvious - variables can be changs in unexpected and even inadvertent ways, and the program is hard to modify. 
-
 
 ## Header files - explained in terms of the reverse polish calculator
 The definitions and declarations shared among the files. As much as possible, we want to centralize this, so that there is only one copy to get and keep right as the program evolves. Accordingly, we will place this common material in a header file, calc.h, which will be included as necessary.
 
-For this small program, it is fine that we have one headgear file that contains everything. For a much larger program, more organization and more headers would be needed.
+For this small program, it is fine that we have one header file that contains everything. For a much larger program, more organization and more headers would be needed.
 
 <img src="headers.png" width="600">
+
+Use extern variables carefully - using too much can lead to programs where data connections are not all obvious - variables can be changs in unexpected and even inadvertent ways, and the program is hard to modify. 
+
 
 ## Static Variables -  explained in terms of the reverse polish calculator
 The static declaration, **applied to an external variable or function**, limits the scope of that object to the rest of the source file being compiled. External static thus provides a way to hide names like buf and bufp in the getch-ungetch combination, which must be external so they can be shared, yet which should not be visible to users of getch and ungetch.
