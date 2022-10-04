@@ -224,6 +224,7 @@ What functions should have access to what variables?
 ```c
 #include <stdio.h>
 #include <stdlib.h> // for atof()
+#include <ctype.h>
 
 // K&R page 76-79
 
