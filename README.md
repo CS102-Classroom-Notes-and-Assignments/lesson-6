@@ -450,6 +450,20 @@ int main()
   return 0;
 }
 ```
+
+#### Block Structure - 
+An automatic variable declared and initialized in a block is initialized each time the block is entered.
+
+If an automatic variable has the same name as an external variable or function, the automatic variable hides any outer occurrences. 
+```c
+int x;
+int y;
+f(double x) {
+	double y;
+}
+```
+Inside f, x is the double, outside f, x refers to the external x, … 
+
 ## Register Variables - 
 A register declaration advises the compiler that the variable in question will be heavily used. The idea is that the register variables are to be placed in machine registers, which may result in smaller and faster programs. But compilers are free to ignore the advice. 
 ```c
@@ -468,18 +482,6 @@ f(register unsigned m, register long n)
 
 Depending on the hardware, there are restrictions on how many variables can be in the register, and what types are allowed. Excess definitions are harmless, bc the extra will be ignored. It is not possible to take the address of a register variable.
 
-Block Structure - 
-An automatic variable declared and initialized in a block is initialized each time the block is entered.
-
-If an automatic variable has the same name as an external variable or function, the automatic variable hides any outer occurrences. 
-```c
-int x;
-int y;
-f(double x) {
-	double y;
-}
-```
-Inside f, x is the double, outside f, x refers to the external x, … 
 
 ## Initialization - 
 External and static variables
