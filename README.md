@@ -155,6 +155,8 @@ make: main.c atof.c atof.h
 # this will clean or remove compiled files so you can start fresh
 clean:
     rm -f *.o *.exe
+```
+```
 make
 make clean
 ```
