@@ -487,10 +487,10 @@ Depending on the hardware, there are restrictions on how many variables can be i
 External and static variables
 - If not explicitly initialized, it’s guaranteed to be initialized to 0.
 - The initializer must be a constant expression. The initialization is done before the program begins execution.
+
 Automatic and register variables 
 - If not explicitly initialized, have undefined (garbage) initial values.
 - Initializer is not restricted to being constant, it may be an expression involving other variables/function calls.
-
 
 Scalar variables 
 - variables with one value, as opposed to an array
@@ -612,19 +612,20 @@ Preprocessor - first step in compilation that does replacing
 ```#define max(A,B) ((A) > (B) ? (A) : (B))``` This macro, unlike a function, will serve for any data type, so you can even do: x = max(p, r)
 ```c
 #include <stdio.h>
-#define max(A,B) ((A) > (B) ? (A) : (B))
+#define max(A, B) ((A) > (B) ? (A) : (B))
 
-
- main() {
+int main()
+{
     int x = max(2, 4);
-    printf("%d", x);
+    printf("%d\n", x);
 
     char y = max('z', 'd');
-    printf("\n%c", y);
+    printf("%c\n", y);
+    return 0;
 }
 ```
 
-- Macros do have side effects, such as if max is called with ++a, then a is incremented twice, ```#define square(x) x*x``` must be specified as ```#define square(x) (x)*(x)`` or else ```square(a + b)``` will evaluate wrong.
+- Macros do have side effects, such as if max is called with ++a, then a is incremented twice, ```#define square(x) x*x``` must be specified as ```#define square(x) (x)*(x)``` or else ```square(a + b)``` will evaluate wrong.
 - Macros are still useful to avoid the run-time overhead of calling a function each time. Getchar and putchar are often defined as macros to avoid calling a function for each character processed. 
 - Names can be undefined with #undef
 	- Ensures that a routine is really a function not a macro:
@@ -637,21 +638,23 @@ int getchar(void) { … }
 → When it is invoked with dprint(x, y)
 → The macro is expanded into printf(“x/y” “ =&g\n”, x/y), and the two strings are concating printing out a legal string constant.
 - \## concatenates two arguments:
-- ```#define paste(front, back) front ## back``` 
-- ```paste(name, 1)``` makes the token name1
+	- ```#define paste(front, back) front ## back``` 
+	- ```paste(name, 1)``` makes the token name1
 
 **Conditional Inclusion** to control preprocessing with conditional statements to include code selectively
 - defined(name) in a #if is 1 if the name has been defined, and 0 otherwise. 
 	- So if we want to make sure that the contents of a header are included only once, the contents of the file are surrounded with a conditional like this.
-```
+```c
 #if !defined(HDR)
 #define HDR
 /* contents of hdr.h go here */
 #endif
 ```
-	- defined(name) and !defined(name) can also be written as #ifdef and #ifndef
-	- The first inclusion of hdr.h defines the name HDR; later inclusions will find the name defined and skip down to the #endif. This is useful for each header itself to include any other headers on which it depends, without the user having to deal with interdependence. 
+
+- defined(name) and !defined(name) can also be written as #ifdef and #ifndef
+- The first inclusion of hdr.h defines the name HDR; later inclusions will find the name defined and skip down to the #endif. This is useful for each header itself to include any other headers on which it depends, without the user having to deal with interdependence. 
 - This sequence tests the name SYSTEM to decide which version of a header to include:
+
 ```c
 	#if SYSTEM == SYSV
 		#define HDR “sysv.h”
