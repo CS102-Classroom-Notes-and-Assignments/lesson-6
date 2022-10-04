@@ -433,7 +433,7 @@ Normally function names are global, visible to any part of the entire program. I
 
 **Internal static variables** are local to a particular function just as automatic variables are, but unlike automatics, they remain in existence rather than coming and going each time the function is activated. This means that internal static variables provide private, permanent storage within a single function. 
 
-Internal static variable example:
+###### Internal static variable example:
 ```c
 #include<stdio.h>
 int fun()
