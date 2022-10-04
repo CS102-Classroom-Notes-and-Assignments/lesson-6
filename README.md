@@ -140,3 +140,218 @@ int main()
     return 0;
 }
 ```
+
+### ATOF - In 2 files, compiling
+```gcc -o main atof.c main.c -I.```
+
+
+### SIMPLE MAKEFILE
+#### makefile
+```make
+# this will compile all files every time make is run
+make: main.c atof.c atof.h
+    gcc -o main main.c atof.c -I.
+
+# this will clean or remove compiled files so you can start fresh
+clean:
+    rm -f *.o *.exe
+make
+make clean
+```
+
+
+### UPDATED MAKE FILE
+```make
+This allows you to only recompile
+# Definitions for constants
+CC=gcc
+CFLAGS=-I.
+
+# This will create your final output using .o compiled files
+make: main.o atof.o
+    $(CC) $(CFLAGS) -o main main.o atof.o
+
+# This will compile atof.c
+atof.o: atof.c atof.h
+    $(CC) $(CFLAGS) -c atof.c
+
+# This will compile main.c with its dependency
+main.o: main.c atof.h
+    $(CC) $(CFLAGS) -c main.c
+
+# This will clean or remove compiled files so you can start fresh
+clean:
+    rm -f *.o *.exe
+```
+
+## Reverse Polish Calculator - each operator follows its operands. 
+(1 + 2) * (4 + 5) is entered as 1 2 - 4 5  + * in polish notation.
+
+
+### Implementation:
+- Each operand is pushed onto a stack
+- When an operator arrives, the proper number of operands (two for binary operators) is popped
+- The operator is applied to them
+- And the result is pushed back onto the stack.
+- When the end of the input line is encountered, the value on the top of the stack is popped and printed.
+
+
+### Pseudocode: 
+
+### Questions to consider before writing code: 
+What functions should we have?
+- void push(double f) { …}
+- double pop(void) { … }
+- int getop(char s[]) { …}
+- main()
+
+
+What variables should be external?
+- stack
+- Stack position
+
+
+What functions should have access to what variables?
+- Only push and pop have access to stack 
+
+
+## MAKE FILES - REVERSE POLISH CALCULATOR
+#### CALCULATOR - ALL IN 1 FILE
+```c
+#include <stdio.h>
+#include <stdlib.h> // for atof()
+
+// K&R page 76-79
+
+#define MAXOP   100 // max size of operand or operator
+#define NUMBER  '0' // signal that a number was found
+
+int getop(char []);
+void push(double);
+double pop(void);
+
+// reverse Polish calculator
+int main()
+{
+    int type;
+    double op2;
+    char s[MAXOP];
+
+    while ((type = getop(s)) != EOF) 
+    {
+        switch (type) {
+        case NUMBER:
+            push(atof(s));
+            break;
+        case '+':
+            push(pop() + pop());
+            break;
+        case '*':
+            push(pop() * pop());
+            break;
+/* note that for - and / the left and right operand must be distinguished. If we did push(pop() - pop()); the order in which the two calls of pop are evaluated is not defined. To guarantee the right order, it is necessary to pop the first value into a temporary variable as we did in main.
+*/
+        case '-':
+            op2 = pop(); 
+            push(pop() - op2);
+            break;
+        case '/':
+            op2 = pop();
+            if (op2 != 0.0)
+                push(pop() / op2);
+            else
+                printf("error:zero divisor\n");
+            break;
+        case '\n':
+            printf("\t%.8g\n", pop());
+            break;
+        default:
+            printf("error: unknown command %s\n", s);
+            break;
+        }
+    }
+    return 0;
+}
+
+#define MAXVAL 100  // maximum depth of val stack
+
+int sp = 0;         // next free stack position
+double val[MAXVAL]; // value stack
+
+// push: push f onto value stack
+void push(double f)
+{
+    if (sp < MAXVAL)
+        val[sp++] = f;
+    else
+        printf("error:stack full, can't push %g\n", f);
+}
+
+// pop:pop and return top value from stack
+double pop(void)
+{
+    if (sp > 0)
+        return val[--sp];
+    else {
+        printf("error:stack empty\n");
+        return 0.0;
+    }
+}
+
+int getch(void);
+void ungetch(int);
+
+// getop: get next operator or numeric operand
+int getop(char s[])
+{
+    int i, c;
+
+    while ((s[0] = c = getch()) == ' ' || c == '\t')
+        ;
+
+    s[1] = '\0';
+    if (!isdigit(c) && c != '.')
+        return c; // not a number
+    i = 0;
+    if (isdigit(c)) // collect integer part
+        while (isdigit(s[++i] = c = getch()))
+            ;
+    if (c == '.') // collect fraction part
+        while (isdigit(s[++i] = c = getch()))
+            ;
+
+    s[i] = '\0';
+    if (c != EOF)
+        ungetch(c);
+    return NUMBER;
+}
+
+/* It’s often the case that a program cannot determine that it has read enough input until it has read too much. One instance is collecting characters that make up a number: until the first non-digit is seen, the number is not complete. But then the program has read one character too far, a character that it is not prepared for. 
+
+ungetch solves this problem by making it possible to “un-read” the unwanted character. Then every time the program reads one character too many, it could push it back on the input, so the rest of the code could behave as if it had never been read.
+
+*/
+
+#define BUFSIZE 100
+
+char buf[BUFSIZE];  // buffer for ungetch
+int bufp = 0;       // next free position in buf
+
+int getch(void) // get a (possibly pushed back) charater
+{
+    return (bufp > 0) ? buf[--bufp] : getchar();
+}
+
+void ungetch(int c) // push character back on input
+{
+    if (bufp >= BUFSIZE)
+        printf("ungetch:too many characters\n");
+    else
+        buf[bufp++] = c;
+}
+```
+
+
+
+
+
