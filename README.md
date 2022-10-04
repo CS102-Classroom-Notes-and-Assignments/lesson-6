@@ -565,15 +565,17 @@ void main (){
 
 ## The C Preprocessor 
 Preprocessor - first step in compilation that does replacing
-File Inclusion replaces #include “filename”/<filename> with the contents of the file filename. So, if an included file is changed, all files that depend on it must be recompiled.
-Macro Substitution with #define name replacement replaces any later occurrences of name with replacement till the end of the file.
-Definitions can be continued onto several lines by placing a \ at the end of each line to be continued.
-A definition may use previous definitions.
-You can define a name with an infinite loop:
-#define forever for(;;)
-You can define macros with arguments:
-#define max(A,B) ((A) > (B) ? (A) : (B))
-This macro, unlike a function, will serve for any data type, so you can even do: x = max(p, r)
+
+**File Inclusion** replaces ```#include “filename”/<filename>``` with the contents of the file filename. So, if an included file is changed, all files that depend on it must be recompiled.
+	
+**Macro Substitution** with ```#define name replacement``` replaces any later occurrences of **name** with **replacement** till the end of the file.
+- Definitions can be continued onto several lines by placing a \ at the end of each line to be continued.
+- A definition may use previous definitions.
+- You can define a name with an infinite loop:
+```#define forever for(;;)```
+- You can define macros with arguments:
+```#define max(A,B) ((A) > (B) ? (A) : (B))``` This macro, unlike a function, will serve for any data type, so you can even do: x = max(p, r)
+```c
 #include <stdio.h>
 #define max(A,B) ((A) > (B) ? (A) : (B))
 
@@ -585,29 +587,37 @@ This macro, unlike a function, will serve for any data type, so you can even do:
     char y = max('z', 'd');
     printf("\n%c", y);
 }
-Macros do have side effects, such as if max is called with ++a, then a is incremented twice, #define square(x) x*x must be specified as #define square(x) (x)*(x) or else square(a + b) will evaluate wrong.
-Macros are still useful to avoid the run-time overhead of calling a function each time. Getchar and putchar are often defined as macros to avoid calling a function for each character processed. 
-Names can be undefined with #undef
-Ensures that a routine is really a function not a macro:
+```
+
+- Macros do have side effects, such as if max is called with ++a, then a is incremented twice, ```#define square(x) x*x``` must be specified as ```#define square(x) (x)*(x)`` or else ```square(a + b)``` will evaluate wrong.
+- Macros are still useful to avoid the run-time overhead of calling a function each time. Getchar and putchar are often defined as macros to avoid calling a function for each character processed. 
+- Names can be undefined with #undef
+	- Ensures that a routine is really a function not a macro:
+```c
 #undef getchar
 int getchar(void) { … }
-To make a macro argument a quoted string, use # before the argument. A debug statement can be written as 
-#define dprint(expr) printf(#expr “ =%g\n”, expr)
+```
+- To make a macro argument a quoted string, use # before the argument. A debug statement can be written as 
+```#define dprint(expr) printf(#expr “ =%g\n”, expr)```
 → When it is invoked with dprint(x, y)
 → The macro is expanded into printf(“x/y” “ =&g\n”, x/y), and the two strings are concating printing out a legal string constant.
-## concatenates two arguments:
-#define paste(front, back) front ## back 
-paste(name, 1) makes the token name1
-Conditional Inclusion to control preprocessing with conditional statements to include code selectively
-defined(name) in a #if is 1 if the name has been defined, and 0 otherwise. 
-So if we want to make sure that the contents of a header are included only once, the contents of the file are surrounded with a conditional like this.
+- \## concatenates two arguments:
+- ```#define paste(front, back) front ## back``` 
+- ```paste(name, 1)``` makes the token name1
+
+**Conditional Inclusion** to control preprocessing with conditional statements to include code selectively
+- defined(name) in a #if is 1 if the name has been defined, and 0 otherwise. 
+	- So if we want to make sure that the contents of a header are included only once, the contents of the file are surrounded with a conditional like this.
+```
 #if !defined(HDR)
 #define HDR
 /* contents of hdr.h go here */
 #endif
-defined(name) and !defined(name) can also be written as #ifdef and #ifndef
-The first inclusion of hdr.h defines the name HDR; later inclusions will find the name defined and skip down to the #endif. This is useful for each header itself to include any other headers on which it depends, without the user having to deal with interdependence. 
-This sequence tests the name SYSTEM to decide which version of a header to include:
+```
+	- defined(name) and !defined(name) can also be written as #ifdef and #ifndef
+	- The first inclusion of hdr.h defines the name HDR; later inclusions will find the name defined and skip down to the #endif. This is useful for each header itself to include any other headers on which it depends, without the user having to deal with interdependence. 
+- This sequence tests the name SYSTEM to decide which version of a header to include:
+```c
 	#if SYSTEM == SYSV
 		#define HDR “sysv.h”
 	#elif SYSTEM == BSD
@@ -616,6 +626,7 @@ This sequence tests the name SYSTEM to decide which version of a header to inclu
 		#define HDR “default.h”
 	#endif
 	#include HDR
+```
 
 # CALCULATOR IN MULTIPLE FILES - MAIN.C
 ```c
