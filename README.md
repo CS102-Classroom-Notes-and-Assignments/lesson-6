@@ -387,8 +387,6 @@ Array sizes must be specified with the definition, but are optional with an exte
 
 <img src="scope.png" width="400">
 
-Use extern variables carefully - using too much can lead to programs where data connections are not all obvious - variables can be changs in unexpected and even inadvertent ways, and the program is hard to modify. 
-
 #### Definition vs Declaration 
 https://www.geeksforgeeks.org/difference-between-definition-and-declaration/ 
 
@@ -405,6 +403,8 @@ int add(int a, int b)
   }
 ```
 During this function definition, the memory for the function add will be allocated.
+
+Use extern variables carefully - using too much can lead to programs where data connections are not all obvious - variables can be changs in unexpected and even inadvertent ways, and the program is hard to modify. 
 
 
 ## Header files - explained in terms of the reverse polish calculator
