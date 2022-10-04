@@ -2,7 +2,7 @@
 
 ### Compiling
 
-Suppose that three functions are stored in three files called main.c, getline.c, and strindex.c. Then the command cc main.c getline.c strindex.c compiles the three files, placing the resulting object code in files main.o, getline.o and strindex.o, then loads them into an executable file called a.out. If there is an error, say in main.c, the file can be recompiled by itself and the result loaded with the previous object files, with the command cc main.c getline.o strindex.o (the cc command uses the .c versus .o naming convention to distinguish source files from object files).
+Suppose that three functions are stored in three files called main.c, getline.c, and strindex.c. Then the command ```cc main.c getline.c strindex.c``` compiles the three files, placing the resulting object code in files main.o, getline.o and strindex.o, then loads them into an executable file called a.out. If there is an error, say in main.c, the file can be recompiled by itself and the result loaded with the previous object files, with the command ```cc main.c getline.o strindex.o``` (the cc command uses the .c versus .o naming convention to distinguish source files from object files).
 
 #### Compiling scenarios mentioned in the book
 ```c
@@ -30,7 +30,7 @@ The function atof() must be declared and defined consistently. If atof itself an
 If a function declaration does not include arguments, as in 
 ```double atof();```
 That is taken to mean that nothing is to be assumed about the arguments of atof; all parameter checking is off. This is bad syntax, if the function takes arguments, declare them; if it takes no arguments, use void.
-double atof(void);
+```double atof(void);```
 ```c
 /* atoi: convert string s to integer using atof */
 int atoi(char s[])
@@ -39,7 +39,7 @@ int atoi(char s[])
 	return (int) atof(s);
 }
 ```
-This operation does potentially discard information, however, so some compilers warn of it. The cast states explicitly that the operation is intended, and suppresses any warning.
+In the code above,the function atof returns a double, but atoi returns an int. This operation does potentially discard information, however, so some compilers warn of it. The cast states explicitly that the operation is intended, and suppresses any warning.
 
 ###  Make Files - ATOF
 #### ATOF - In One File
