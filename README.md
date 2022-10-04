@@ -146,6 +146,8 @@ int main()
 
 
 ### SIMPLE MAKEFILE
+- More information on gcc options: https://man7.org/linux/man-pages/man1/gcc.1.html
+- If you receive an error when running this make file, make sure the indented lines are indented by a tab, instead of white spaces
 #### makefile
 ```make
 # this will compile all files every time make is run
@@ -163,8 +165,8 @@ make clean
 
 
 ### UPDATED MAKE FILE
-```make
 This allows you to only recompile
+```make
 # Definitions for constants
 CC=gcc
 CFLAGS=-I.
@@ -187,7 +189,7 @@ clean:
 ```
 
 ## Reverse Polish Calculator - each operator follows its operands. 
-(1 + 2) * (4 + 5) is entered as 1 2 - 4 5  + * in polish notation.
+(1 - 2) * (4 + 5) is entered as 1 2 - 4 5  + * in polish notation.
 
 
 ### Implementation:
@@ -251,7 +253,10 @@ int main()
         case '*':
             push(pop() * pop());
             break;
-/* note that for - and / the left and right operand must be distinguished. If we did push(pop() - pop()); the order in which the two calls of pop are evaluated is not defined. To guarantee the right order, it is necessary to pop the first value into a temporary variable as we did in main.
+/* note that for - and / the left and right operand must be distinguished. 
+If we did push(pop() - pop()); the order in which the two calls of pop are 
+evaluated is not defined. To guarantee the right order, it is necessary to
+pop the first value into a temporary variable as we did in main.
 */
         case '-':
             op2 = pop(); 
@@ -328,9 +333,16 @@ int getop(char s[])
     return NUMBER;
 }
 
-/* It’s often the case that a program cannot determine that it has read enough input until it has read too much. One instance is collecting characters that make up a number: until the first non-digit is seen, the number is not complete. But then the program has read one character too far, a character that it is not prepared for. 
+/* It’s often the case that a program cannot determine that it has read 
+enough input until it has read too much. One instance is collecting
+characters that make up a number: until the first non-digit is seen,
+the number is not complete. But then the program has read one character 
+too far, a character that it is not prepared for. 
 
-ungetch solves this problem by making it possible to “un-read” the unwanted character. Then every time the program reads one character too many, it could push it back on the input, so the rest of the code could behave as if it had never been read.
+ungetch solves this problem by making it possible to “un-read” the 
+unwanted character. Then every time the program reads one character too
+many, it could push it back on the input, so the rest of the code could 
+behave as if it had never been read.
 
 */
 
