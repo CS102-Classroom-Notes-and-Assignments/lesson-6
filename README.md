@@ -853,4 +853,5 @@ clean:
 # Homework:
 - The C Programming Language, 2nd Edition - Kernighan & Ritchie, Chapter 1.10, 4.3-4.11
 - HW link - check lesson 5
-- Reminder - Quiz next week! I will post Quiz1 grades on github here once everyone has taken it: https://classroom.github.com/a/laHq3R0J
+- Reminder - Quiz next week! Topics covered on the quiz: https://github.com/CS102-Classroom-Notes-and-Assignments/quiz-2-practice
+- I will post Quiz1 grades on github here once everyone has taken it: https://classroom.github.com/a/laHq3R0J
